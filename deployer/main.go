@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 )
 
 var BaseDir = getBaseDir()
@@ -97,6 +98,20 @@ func pushImage(imageName string) bool {
 	return true
 }
 
+func deleteImage(imageName string) bool {
+	var images [2]string
+	images[0] = imageName
+	images[1] = registry + "/" + imageName
+	for image := range images {
+		fmt.Println("Удаление образа " + images[image])
+		cmd := exec.Command("docker", "rmi", images[image])
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Run()
+	}
+	return true
+}
+
 func btpImage(imageName string, projectName string, pathToProject string) bool {
 	buildImage(imageName, pathToProject)
 	fmt.Println(" ")
@@ -115,7 +130,8 @@ func btpImage(imageName string, projectName string, pathToProject string) bool {
 func main() {
 	var projectName string
 	var imageName string
-	fmt.Print("Введите имя проекта или путь к Dockerfile: ")
+	var isDelete bool
+	fmt.Print("Введите имя проекта: ")
 	fmt.Fscan(os.Stdin, &projectName)
 	if checkProject(projectName) == "true" {
 		fmt.Println("Проект " + projectName + " найден\n")
@@ -123,14 +139,30 @@ func main() {
 		fmt.Println("Введите имя образа: ")
 		fmt.Fscan(os.Stdin, &imageName, "\n")
 		fmt.Println(" ")
+		start := time.Now()
 		btpImage(imageName, projectName, getKey(ReadFile(ConfigDir+"projects.json"), projectName, "path"))
+		if getKey(ReadFile(ConfigDir+"config.json"), "delete_after_push", "enabled") == "true" {
+			deleteImage(imageName)
+			fmt.Println(" ")
+			fmt.Println("Образ " + imageName + " удалён\n")
+			isDelete = true
+		} else {
+			fmt.Println(" ")
+			fmt.Println("Образ " + imageName + " не удалён, так как выключена соответствующая настройка \n")
+		}
+		end := time.Now()
+		fmt.Println(" ")
+		fmt.Println("Время выполнения: " + fmt.Sprint(end.Sub(start)))
+		if isDelete {
+			fmt.Println("Название образа: " + imageName + " (был удалён)")
+		} else {
+			fmt.Println("Название образа: " + imageName)
+		}
+		fmt.Println("Проект: " + projectName)
+
 	} else {
 		fmt.Println("Проект " + projectName + " не найден")
 	}
-	//time.Sleep(3600 * time.Second)
-}
 
-//} else if checkProject(projectName) == "path" {
-//fmt.Println("Проект " + projectName + " найден!\n")
-//path := generateName(6)
-//btpImage(imageName, path, projectName)
+	time.Sleep(3600 * time.Second)
+}
