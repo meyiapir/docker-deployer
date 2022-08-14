@@ -45,28 +45,39 @@ func getKey(data map[string]interface{}, key1 string, key2 string) string {
 	return str
 }
 
-func checkProject(projectName string) bool {
-	var a bool
+func checkFilePath(filePath string) bool {
+	files, err := ioutil.ReadDir(filePath)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+	for _, file := range files {
+		if file.Name() == "Dockerfile" {
+			return true
+		}
+	}
+	return false
+}
+
+func checkProject(projectName string) string {
+	var a string
 	projects := ReadFile(ConfigDir + "projects.json")
 	for range projects {
 		if getKey(projects, projectName, "name") != "false" {
-			a = true
+			a = "true"
 		} else {
-			a = false
+			a = "false"
 		}
 	}
 	return a
 }
 
-func buildImage(imageName string, projectName string) bool {
-	pathToProject := getKey(ReadFile(ConfigDir+"projects.json"), projectName, "path")
+func buildImage(imageName string, pathToProject string) bool {
+	fmt.Println("Путь к проекту: " + pathToProject)
 	cmd := exec.Command("docker", "build", pathToProject, "-t", imageName)
-	//cmd := exec.Command("calc")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Run()
-	fmt.Println(" ")
-	fmt.Println("Проект " + projectName + " собран\n" + "Имя образа: " + imageName)
 	return true
 }
 
@@ -75,10 +86,7 @@ func tagImage(imageName string) bool {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Run()
-	fmt.Println(" ")
-	fmt.Println("Образ " + imageName + " отмечен как " + registry + "/" + imageName + "\n")
 	return true
-
 }
 
 func pushImage(imageName string) bool {
@@ -86,6 +94,19 @@ func pushImage(imageName string) bool {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Run()
+	return true
+}
+
+func btpImage(imageName string, projectName string, pathToProject string) bool {
+	buildImage(imageName, pathToProject)
+	fmt.Println(" ")
+	fmt.Println("Проект " + projectName + " собран\n" + "Имя образа: " + imageName)
+
+	tagImage(imageName)
+	fmt.Println(" ")
+	fmt.Println("Образ " + imageName + " отмечен как " + registry + "/" + imageName + "\n")
+
+	pushImage(imageName)
 	fmt.Println(" ")
 	fmt.Println("Образ " + imageName + " отправлен в репозиторий " + registry + "\n")
 	return true
@@ -96,28 +117,20 @@ func main() {
 	var imageName string
 	fmt.Print("Введите имя проекта или путь к Dockerfile: ")
 	fmt.Fscan(os.Stdin, &projectName)
-	if checkProject(projectName) {
+	if checkProject(projectName) == "true" {
 		fmt.Println("Проект " + projectName + " найден\n")
 		fmt.Println("**********************************************************")
 		fmt.Println("Введите имя образа: ")
 		fmt.Fscan(os.Stdin, &imageName, "\n")
 		fmt.Println(" ")
-		buildImage(imageName, projectName)
-		tagImage(imageName)
-		//pushImage(imageName)
+		btpImage(imageName, projectName, getKey(ReadFile(ConfigDir+"projects.json"), projectName, "path"))
 	} else {
 		fmt.Println("Проект " + projectName + " не найден")
 	}
 	//time.Sleep(3600 * time.Second)
 }
 
-//cmd := exec.Command("dir", "C:\\Users\\meyap\\go\\src\\Sportifier-deployer")
-//getKey(ReadFile(ConfigDir+"projects.json"), "mailer", "path")
-
-//func main1() {
-//	if getKey(ReadFile(ConfigDir+"projects.json"), "Sender", "name") != false {
-//		fmt.Println("yes")
-//	} else {
-//		fmt.Println("no")
-//	}
-//}
+//} else if checkProject(projectName) == "path" {
+//fmt.Println("Проект " + projectName + " найден!\n")
+//path := generateName(6)
+//btpImage(imageName, path, projectName)
