@@ -1,7 +1,7 @@
 # Deployer
 
 ***
-**`VERSION: DEV-0.2`**
+**`VERSION: DEV-0.3`**
 **`AOC(LR): -`**
 **`AOC(FR): -`**
 **`FIRST RELEASE DAY: -`**
