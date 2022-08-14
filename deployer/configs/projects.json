@@ -1,0 +1,9 @@
+{
+  "mailer": {
+    "path": "C:\\Users\\meyap\\PycharmProjects\\Sportifier-mailer"
+  },
+  "sender": {
+    "path": "path_to_sender"
+  }
+}
+
