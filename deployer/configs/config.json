@@ -1,6 +1,6 @@
 {
   "registry": {
-    "address": "sp1.servers.bot-hub.ru",
+    "address": "url",
     "port": 5000
   },
   "delete_after_push": {

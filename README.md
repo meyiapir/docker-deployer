@@ -1,13 +1,7 @@
 # Deployer
 
 ***
-**`VERSION: DEV-0.3`**
-**`AOC(LR): -`**
-**`AOC(FR): -`**
-**`FIRST RELEASE DAY: -`**
-> AOC - Amount Of Code (In lines)
->
-> LR - Last Release | FR - First Release
+**`VERSION: DEV-0.6`**
 
 ## Сборка и запуск приложения:
 
@@ -18,3 +12,19 @@
     go build main.go
     ```
 4) В папке deployer появиться исполняемый файл - Готово!
+
+## Конфигурация:
+В папке `deployer\сonfigs` файл `config.json`
+```json
+{
+   "registry": {
+      "address": "url",
+      "port": 5000
+   },
+   "delete_after_push": {
+      "enabled": true
+   }
+}
+```
+Параметр `delete_after_push` - удалять ли файлы после отправки в репозиторий
+Параметр `registry` - адрес репозитория
