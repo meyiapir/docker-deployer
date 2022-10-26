@@ -46,19 +46,19 @@ func getKey(data map[string]interface{}, key1 string, key2 string) string {
 	return str
 }
 
-func checkFilePath(filePath string) bool {
-	files, err := ioutil.ReadDir(filePath)
-	if err != nil {
-		log.Fatal(err)
-		return false
-	}
-	for _, file := range files {
-		if file.Name() == "Dockerfile" {
-			return true
-		}
-	}
-	return false
-}
+//func checkFilePath(filePath string) bool {
+//	files, err := ioutil.ReadDir(filePath)
+//	if err != nil {
+//		log.Fatal(err)
+//		return false
+//	}
+//	for _, file := range files {
+//		if file.Name() == "Dockerfile" {
+//			return true
+//		}
+//	}
+//	return false
+//}
 
 func checkProject(projectName string) string {
 	var a string
@@ -164,5 +164,5 @@ func main() {
 		fmt.Println("Проект " + projectName + " не найден")
 	}
 
-	time.Sleep(3600 * time.Second)
+	time.Sleep(43200 * time.Second)
 }
