@@ -1,18 +1,7 @@
 {
-  "mailer": {
-    "path": "C:\\Users\\meyap\\PycharmProjects\\Sportifier-mailer"
-  },
-  "sender": {
-    "path": "C:\\Users\\meyap\\PycharmProjects\\Sportifier-sender"
-  },
-  "payments": {
-    "path": "C:\\Users\\meyap\\PycharmProjects\\Sportifier-payments"
-  },
-  "frontend": {
-    "path": "C:\\Users\\meyap\\PycharmProjects\\Sportifier-Frontend"
-  },
-  "reminder": {
-    "path": "C:\\Users\\meyap\\PycharmProjects\\Sportifier-reminder"
+  "test": {
+    "path": "C:\\Users\\username\\directory\\project_dir"
   }
 }
+
 
